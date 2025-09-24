@@ -1,9 +1,40 @@
 %{
+
+typedef struct lex_data_ {
+    int token_code;
+    int token_len;
+    char *token_val;
+}lex_data_t;
+
+#define MAX_MEXPR_LEN 512
+#define MAX_MEXPR_SIZE 512
+
+typedef stuct stack_ {
+    int top;
+    lex_data_t data[MAX_MEXPR_LEN];
+}stack_t;
+
 extern "C" int yylex();
 
-extern char lex_buffer[512];
+extern char lex_buffer[MAX_MEXPR_SIZE];
+extern stack_t undo_stack;
+extern char *curr_ptr;
 
-char lex_buffer[512];
+stack_t undo_stack = {-1, {0, 0, 0}};
+char lex_buffer[MAX_MEXPR_SIZE];
+char *curr_ptr = lex_buffer;
+
+static void lex_push(lex_data_t lex_data) {
+    assert(undo_stack.top < MAX_MEXPR_LEN - 1);
+    undo_stack.data[++undo_stack.top] = lex_data;
+}
+
+static lex_data_t lex_pop() {
+    assert(undo_stack.top > -1);
+    lex_data_t res = undo_stack.data[undo_stack.top];
+    undo_stack.top--;
+    return res;
+}
 
 #include "MexprEnums.h"
 
