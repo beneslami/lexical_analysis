@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
 
         int token_code;
         while((token_code = yylex()) != PARSER_EOL) {
-            printf("Token Code = %d | token = %s, token length = %lu\n", token_code, yytext, yyleng);
+            printf("Token Type = %s | token = %s, token length = %lu\n", stringTypes[token_code], yytext, yyleng);
         }
     }
     return 0;
